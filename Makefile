@@ -7,7 +7,7 @@ format:
 	./format.sh
 
 build:
-	clang $(CFLAGS) -c build.c -I./ -I./thirdparty/glad/include
+	clang $(CFLAGS) -c src/build.c -I./ -I./thirdparty/glad/include
 	clang -fsanitize=address build.o -o app -I./ $(LDFLAGS)
 
 run:
