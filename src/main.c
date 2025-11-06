@@ -45,6 +45,10 @@ int main(void) {
         glm_mat4_identity(perspective);
         glm_mat4_identity(view);
 
+        glm_lookat((vec3){0, 0, 4}, (vec4){0, 0, 0}, (vec3){0, 1, 0}, view);
+
+        glm_perspective_default((float)window.width/(float)window.height, perspective);
+
         float i = 0;
         while (!window.should_close) {
                 if (window_read_key(KEY_CODE_ESCAPE, KEY_STATE_PRESSED)) {
@@ -54,12 +58,14 @@ int main(void) {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 glClearColor(0, 0, 0, 1);
 
-                glUseProgram(program);
+                glm_spin(model, 0.01f, (vec3){0,1,0});
 
                 glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, (float*)model);
                 glUniformMatrix4fv(glGetUniformLocation(program, "perspective"), 1, GL_FALSE, (float*)perspective);
                 glUniformMatrix4fv(glGetUniformLocation(program, "view"), 1, GL_FALSE, (float*)view);
 
+
+                glUseProgram(program);
                 glEnableVertexAttribArray(0);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo);
                 glDrawArrays(GL_TRIANGLES, 0, 3);
