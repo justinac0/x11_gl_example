@@ -41,9 +41,10 @@ int main(void) {
                 window_poll_events(&window);
         }
 
+        glEnable(GL_INVALID_ENUM);
+
         gl_ctx_destroy(&ctx);
         window_destroy(&window);
 
         return 0;
 }
-

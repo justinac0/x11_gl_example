@@ -1,8 +1,3 @@
-#include <X11/X.h>
-#include <X11/Xlib.h>
-
-#include "glad/egl.h"
-#include "glad/gl.h"
 #define KEY_COUNT (256)
 static Key keys[KEY_COUNT];
 #undef KEY_COUNT
@@ -47,6 +42,18 @@ GLOBAL NativeWindow window_create(const char* title, uint16_t width,
 
         XMapWindow(window.display, window.handle);
 
+        // NOTE: setup Atoms
+        // TODO(justin): check BadAlloc/BadValue from XInternAtom
+        window.wm_protocols =
+            XInternAtom(window.display, "WM_PROTOCOLS", False);
+        window.wm_delete_window =
+            XInternAtom(window.display, "WM_DELETE_WINDOW", False);
+        window.wm_name  = XInternAtom(window.display, "WM_NAME", False);
+        window.wm_hints = XInternAtom(window.display, "WM_HINTS", False);
+
+        XSetWMProtocols(window.display, window.handle, &window.wm_delete_window,
+                        1);
+
         XFlush(window.display);
 
         return window;
@@ -70,6 +77,13 @@ GLOBAL void window_poll_events(NativeWindow* window) {
         switch (e.type) {
                 default:
                         break;
+                case ClientMessage:
+                        if ((Atom) e.xclient.data.l[0] ==
+                            window->wm_delete_window) {
+                                LOG_WARNING("wm_delete_window called");
+                                window->should_close = true;
+                        }
+                        break;
                 case ConfigureNotify:
                         window->width  = e.xconfigure.width;
                         window->height = e.xconfigure.height;
@@ -88,4 +102,3 @@ GLOBAL void window_poll_events(NativeWindow* window) {
 GLOBAL bool window_read_key(KeyCode key, KeyState state) {
         return keys[key].state == state;
 }
-

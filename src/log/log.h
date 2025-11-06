@@ -37,8 +37,11 @@ GLOBAL void  log_printf(LogLevel level, const char* fmt, ...);
                    " [error] " ANSI_COLOUR_CLEAR fmt "\n", \
                    ##__VA_ARGS__)
 
-#define LOG_WARNING(fmt, ...) \
-        log_printf(LOG_LEVEL_WARNING, LOCATION_INFO fmt "\n", ##__VA_ARGS__)
+#define LOG_WARNING(fmt, ...)                                \
+        log_printf(LOG_LEVEL_WARNING,                        \
+                   LOCATION_INFO ANSI_COLOUR_YELLOW          \
+                   " [warning] " ANSI_COLOUR_CLEAR fmt "\n", \
+                   ##__VA_ARGS__)
 
 #define LOG_INFO(fmt, ...)                                \
         log_printf(LOG_LEVEL_INFO,                        \

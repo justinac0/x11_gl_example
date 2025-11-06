@@ -14,6 +14,7 @@ struct NativeWindow {
         Atom     wm_protocols;
         Atom     wm_delete_window;
         Atom     wm_name;
+        Atom     wm_hints;
 #endif
         const char*        title;
         uint16_t           width;

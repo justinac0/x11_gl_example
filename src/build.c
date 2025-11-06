@@ -22,6 +22,7 @@
 ////////////////////////////////////
 /// PLATFORM
 #if defined(WINDOW_XLIB)
+#include <X11/X.h>
 #include <X11/Xlib.h>
 #else
 // TODO(justin): support for xcb, wayland, winapi, ...
