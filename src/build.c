@@ -27,9 +27,9 @@
 ////////////////////////////////////
 /// X11_gl_example specific
 #include "src/base.h"
+#include "src/window/window.h"
 #include "src/window/gl_ctx.h"
 #include "src/window/gl_ctx.c"
-#include "src/window/window.h"
 
 #if defined(WINDOW_XLIB)
 #include "src/window/xlib_window.c"

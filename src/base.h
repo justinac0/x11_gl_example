@@ -1,16 +1,12 @@
 #ifndef BASE_H
 #define BASE_H
 
-#ifdef NORMAL_BUILD
-#define INTERNAL
-#define GLOBAL
-#define LOCAL
-#else
 #define INTERNAL static
 #define GLOBAL   static
 #define LOCAL    static
-#endif
 
-#define ARRAY_LEN(a) (sizeof(a) / sizeof(*a))
+#define UNUSED(a) (void)(a)
+
+#define ARRAY_LEN(a) (sizeof(a) / sizeof(a[0]))
 
 #endif /* BASE_H */

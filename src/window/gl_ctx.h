@@ -2,12 +2,14 @@
 #define GL_CTX_H
 
 typedef struct {
-        EGLContext context;
+        EGLContext* context;
         EGLDisplay display;
         EGLSurface surface;
 } GLctx;
 
-GLOBAL GLctx gl_ctx_create(void);
-GLOBAL void gl_ctx_swapbuffers(GLctx* ctx);
+GLOBAL GLctx gl_ctx_create(NativeWindowHandle* window_handle);
+GLOBAL void gl_ctx_destroy(GLctx* ctx);
+GLOBAL void  gl_ctx_swapbuffers(GLctx* ctx);
+GLOBAL void  gl_ctx_make_current(GLctx* ctx);
 
 #endif /* GL_CTX_H */

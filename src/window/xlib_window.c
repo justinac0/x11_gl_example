@@ -31,7 +31,7 @@ GLOBAL NativeWindow window_create(const char* title, uint16_t width,
 
         XSetWindowAttributes attr = {0};
         attr.event_mask = EnterWindowMask | LeaveWindowMask | KeyPressMask |
-                          KeyReleaseMask | ButtonPressMask | ButtonReleaseMask;
+                          KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | StructureNotifyMask;
         attr.colormap = colormap;
 
         window.handle =
@@ -42,8 +42,6 @@ GLOBAL NativeWindow window_create(const char* title, uint16_t width,
         XFreeColormap(window.display, colormap);
 
         XMapWindow(window.display, window.handle);
-
-        window.gl_ctx = gl_ctx_create();
 
         XFlush(window.display);
 
@@ -58,6 +56,9 @@ GLOBAL void window_destroy(NativeWindow* window) {
 
 GLOBAL void window_poll_events(NativeWindow* window) {
         assert(window);
+
+        int pending = XPending(window->display);
+        if (pending == 0) return;
 
         XEvent e;
         XNextEvent(window->display, &e);
@@ -77,9 +78,3 @@ GLOBAL bool window_read_key(KeyCode key, KeyState state) {
         return keys[key].state == state;
 }
 
-GLOBAL void window_set_ctx(NativeWindow* window) {
-}
-
-GLOBAL void window_swapbuffers(NativeWindow* window) {
-        gl_ctx_swapbuffers(&window->gl_ctx);
-}

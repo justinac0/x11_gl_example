@@ -20,7 +20,6 @@ struct NativeWindow {
         uint16_t           height;
         bool               should_close;
         NativeWindowHandle handle;
-        GLctx gl_ctx;
 };
 
 typedef enum {
@@ -51,10 +50,6 @@ GLOBAL NativeWindow window_create(const char* title, uint16_t width,
                                   uint16_t height);
 GLOBAL void         window_destroy(NativeWindow* window);
 GLOBAL void         window_poll_events(NativeWindow* window);
-
 GLOBAL bool window_read_key(KeyCode key, KeyState state);
-
-GLOBAL void window_set_ctx(NativeWindow* window);
-GLOBAL void window_swapbuffers(NativeWindow* window);
 
 #endif  // WINDOW_H
