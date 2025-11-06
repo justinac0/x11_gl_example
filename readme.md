@@ -14,6 +14,6 @@ together in my free time.
 
 ## todo
 - [ ] correctly set window properties WM_PROTO etc...
-- [ ] 
+- [ ] display GPU/GL info 
 - [ ] cleanup xcb and xlib code
 - [ ] fix memory leaks fomr 'libgallium'?
