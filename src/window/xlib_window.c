@@ -1,5 +1,6 @@
 #include <X11/X.h>
 #include <X11/Xlib.h>
+
 #include "glad/egl.h"
 #include "glad/gl.h"
 #define KEY_COUNT (256)
@@ -87,3 +88,4 @@ GLOBAL void window_poll_events(NativeWindow* window) {
 GLOBAL bool window_read_key(KeyCode key, KeyState state) {
         return keys[key].state == state;
 }
+

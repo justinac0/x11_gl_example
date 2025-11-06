@@ -1,22 +1,22 @@
 ////////////////////////////////////
 /// STD
 
-#include <stdarg.h>
-#include <time.h>
-#include <sys/time.h>
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/time.h>
+#include <time.h>
 
 ////////////////////////////////////
 /// GLAD specific
 #include "glad/egl.h"
-#include "glad/gl.h"
 #include "thirdparty/glad/src/egl.c"
+#include "glad/gl.h"
 #include "thirdparty/glad/src/gl.c"
 
 ////////////////////////////////////
@@ -34,13 +34,11 @@
 #include "src/log/log.h"
 #include "src/log/log.c"
 #include "src/window/window.h"
+#if defined(WINDOW_XLIB)
+#include "src/window/xlib_window.c"
+#endif
 #include "src/window/gl_ctx.h"
 #include "src/window/gl_ctx.c"
 #include "src/render/gl/shader.h"
 #include "src/render/gl/shader.c"
-
-#if defined(WINDOW_XLIB)
-#include "src/window/xlib_window.c"
-#endif
-
 #include "main.c"

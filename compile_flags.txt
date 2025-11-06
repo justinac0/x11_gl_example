@@ -1,3 +1,0 @@
--I./
--I./src
--I./thirdparty/glad/include

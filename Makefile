@@ -1,4 +1,4 @@
-CFLAGS=-Wall -pedantic -Wno-unused-function -Wno-gnu-zero-variadic-macro-arguments -Wno-unused-function -Wno-undefined-internal -std=c99 -DWINDOW_XLIB
+CFLAGS=-Wall -pedantic -Wno-unused-function -Wno-gnu-zero-variadic-macro-arguments -Wno-unused-function -Wno-undefined-internal -fsanitize=address -std=c99 -DWINDOW_XLIB
 LDFLAGS=-lEGL -lX11 -lGL
 
 all: build run
@@ -8,7 +8,7 @@ format:
 
 build:
 	mkdir -p bin/
-	clang $(CFLAGS) -c src/build.c -I./ -I./thirdparty/glad/include
+	clang $(CFLAGS) -c src/build.c -I./ -I./src -I./thirdparty/glad/include
 	clang -fsanitize=address build.o -o app -I./ $(LDFLAGS)
 
 run:
