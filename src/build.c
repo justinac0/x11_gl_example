@@ -1,5 +1,9 @@
 ////////////////////////////////////
 /// STD
+
+#include <stdarg.h>
+#include <time.h>
+#include <sys/time.h>
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +31,8 @@
 ////////////////////////////////////
 /// X11_gl_example specific
 #include "src/base.h"
+#include "src/log/log.h"
+#include "src/log/log.c"
 #include "src/window/window.h"
 #include "src/window/gl_ctx.h"
 #include "src/window/gl_ctx.c"

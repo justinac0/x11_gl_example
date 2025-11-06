@@ -50,6 +50,6 @@ GLOBAL NativeWindow window_create(const char* title, uint16_t width,
                                   uint16_t height);
 GLOBAL void         window_destroy(NativeWindow* window);
 GLOBAL void         window_poll_events(NativeWindow* window);
-GLOBAL bool window_read_key(KeyCode key, KeyState state);
+GLOBAL bool         window_read_key(KeyCode key, KeyState state);
 
 #endif  // WINDOW_H
