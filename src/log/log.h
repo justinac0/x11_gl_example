@@ -67,4 +67,5 @@ GLOBAL void log_printf(LogLevel level, const char *fmt, ...);
     ##__VA_ARGS__\
 )
 
-#endif // LOG_H
+#endif /* LOG_H */
+

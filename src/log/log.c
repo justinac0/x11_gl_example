@@ -24,7 +24,7 @@ inline GLOBAL void log_printf(LogLevel level, const char *fmt, ...) {
     tm_info = localtime(&tv.tv_sec);
 
     fprintf(stream,
-        ANSI_COLOUR_BRIGHT_BLACK
+        ANSI_COLOUR_WHITE
             "(%02d:%02d:%02d:%04d)"
         ANSI_COLOUR_CLEAR,
         tm_info->tm_hour,

@@ -27,24 +27,24 @@ GLOBAL GLctx gl_ctx_create(NativeWindow* window) {
 
                 ctx.display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
                 if (ctx.display == EGL_NO_DISPLAY) {
-                        abort();
+                        LOG_FATAL("failed to get EGL display");
                 }
 
                 if (!eglInitialize(ctx.display, NULL, NULL)) {
-                        abort();
+                        LOG_FATAL("failed to initialize EGL");
                 }
 
                 egl_version = gladLoaderLoadEGL(ctx.display);
                 if (!egl_version) {
-                        abort();
+                        LOG_FATAL("failed to EGL with glad");
                 }
 
                 major = GLAD_VERSION_MAJOR(egl_version);
                 minor = GLAD_VERSION_MINOR(egl_version);
                 if (major < 1 || (major == 1 && minor < 5)) {
-                        abort();
+                        LOG_FATAL("EGL version 1.5 required, got EGL v%d.%d", major, minor);
                 }
-                LOG_INFO("Loaded EGL %d.%d", major, minor);
+                LOG_INFO("EGL v%d.%d", major, minor);
         }
 
         EGLBoolean ok = eglBindAPI(EGL_OPENGL_API);
@@ -76,7 +76,7 @@ GLOBAL GLctx gl_ctx_create(NativeWindow* window) {
                 if (!eglChooseConfig(ctx.display, attr, configs, config_count,
                                      &config_count) ||
                     config_count == 0) {
-                        abort();
+                        LOG_FATAL("EGL failed to choose config");
                 }
 
                 for (EGLint i = 0; i < config_count; i++) {
@@ -89,12 +89,13 @@ GLOBAL GLctx gl_ctx_create(NativeWindow* window) {
                         ctx.surface = eglCreatePlatformWindowSurface(
                             ctx.display, configs[i], &window->handle, attr);
                         if (ctx.surface != EGL_NO_SURFACE) {
+                                LOG_INFO("found a platform specfic window surface");
                                 break;
                         }
                 }
 
                 if (ctx.surface == EGL_NO_SURFACE) {
-                        abort();
+                        LOG_INFO("failed to create a platform specfic window surface");
                 }
         }
 
@@ -114,13 +115,13 @@ GLOBAL GLctx gl_ctx_create(NativeWindow* window) {
                 ctx.context = eglCreateContext(ctx.display, EGL_NO_CONFIG_KHR,
                                                EGL_NO_CONTEXT, attr);
                 if (ctx.context == EGL_NO_CONTEXT) {
-                        abort();
+                        LOG_INFO("failed to create EGL context");
                 }
         }
 
         gl_ctx_make_current(&ctx);
         int gl_version = gladLoaderLoadGL();
-        LOG_INFO("Loaded GL %d.%d", GLAD_VERSION_MAJOR(gl_version), GLAD_VERSION_MINOR(gl_version));
+        LOG_INFO("GL v%d.%d", GLAD_VERSION_MAJOR(gl_version), GLAD_VERSION_MINOR(gl_version));
 
         glDebugMessageCallback(&gl_debug_callback_, NULL);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
