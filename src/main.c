@@ -3,7 +3,7 @@
 int main(void) {
         log_set_stream(stderr);
 
-        NativeWindow window = window_create("xlib_gl_example", 1280, 720);
+        NativeWindow window = window_create("xlib_gl_example", 640, 480);
         GLctx        ctx    = gl_ctx_create(&window);
 
         // NOTE(justin):
