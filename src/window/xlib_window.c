@@ -1,11 +1,11 @@
 #define KEY_COUNT (256)
 INTERNAL Key keys[KEY_COUNT];
-KeyCode KEY_CODE_ESCAPE = 9;
-KeyCode KEY_CODE_W      = 25;
-KeyCode KEY_CODE_A      = 38;
-KeyCode KEY_CODE_S      = 39;
-KeyCode KEY_CODE_D      = 40;
-KeyCode KEY_CODE_SPACE  = 65;
+KeyCode      KEY_CODE_ESCAPE = 9;
+KeyCode      KEY_CODE_W      = 25;
+KeyCode      KEY_CODE_A      = 38;
+KeyCode      KEY_CODE_S      = 39;
+KeyCode      KEY_CODE_D      = 40;
+KeyCode      KEY_CODE_SPACE  = 65;
 
 GLOBAL NativeWindow window_create(const char* title, uint16_t width,
                                   uint16_t height) {
@@ -24,23 +24,14 @@ GLOBAL NativeWindow window_create(const char* title, uint16_t width,
         Visual* visual = DefaultVisual(window.display, screen);
         Window  root   = RootWindow(window.display, screen);
 
-        /*
-        Colormap colormap =
-            XCreateColormap(window.display, root, visual, AllocNone);
-        */
-
         XSetWindowAttributes attr = {0};
         attr.event_mask = EnterWindowMask | LeaveWindowMask | KeyPressMask |
                           KeyReleaseMask | ButtonPressMask | ButtonReleaseMask |
                           StructureNotifyMask;
-        //attr.colormap = colormap;
 
-        window.handle =
-            XCreateWindow(window.display, root, 0, 0, width, height, 0,
-                          DefaultDepth(window.display, screen), InputOutput,
-                          visual, CWEventMask, &attr);
-        //CWColormap
-        //XFreeColormap(window.display, colormap);
+        window.handle = XCreateWindow(window.display, root, 0, 0, width, height,
+                                      0, DefaultDepth(window.display, screen),
+                                      InputOutput, visual, CWEventMask, &attr);
 
         XMapWindow(window.display, window.handle);
 
@@ -77,27 +68,31 @@ GLOBAL void window_poll_events(NativeWindow* window) {
         XEvent e;
         XNextEvent(window->display, &e);
         switch (e.type) {
-                default:
-                        break;
-                case ClientMessage:
+                default: {
+                } break;
+
+                case ClientMessage: {
                         if ((Atom) e.xclient.data.l[0] ==
                             window->wm_delete_window) {
                                 LOG_WARNING("wm_delete_window called");
                                 window->should_close = true;
                         }
-                        break;
-                case ConfigureNotify:
+                } break;
+
+                case ConfigureNotify: {
                         window->width  = e.xconfigure.width;
                         window->height = e.xconfigure.height;
                         // NOTE: assumes GL context
                         glViewport(0, 0, window->width, window->height);
-                        break;
-                case KeyPress:
+                } break;
+
+                case KeyPress: {
                         keys[e.xkey.keycode].state = KEY_STATE_PRESSED;
-                        break;
-                case KeyRelease:
+                } break;
+
+                case KeyRelease: {
                         keys[e.xkey.keycode].state = KEY_STATE_RELEASED;
-                        break;
+                } break;
         }
 }
 

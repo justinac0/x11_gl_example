@@ -13,5 +13,7 @@ together in my free time.
     - genereated all glad code through online generator, loader option enabled
 
 ## todo
+- [ ] correctly set window properties WM_PROTO etc...
+- [ ] 
 - [ ] cleanup xcb and xlib code
 - [ ] fix memory leaks fomr 'libgallium'?
