@@ -18,8 +18,8 @@ GLOBAL NativeWindow window_create(const char* title, uint16_t width,
         assert(title);
 
         NativeWindow window = {0};
-        window.width = width;
-        window.height = height;
+        window.width        = width;
+        window.height       = height;
 
         window.display = XOpenDisplay(NULL);
         assert(window.display);
@@ -70,7 +70,7 @@ GLOBAL void window_poll_events(NativeWindow* window) {
                 default:
                         break;
                 case ConfigureNotify:
-                        window->width = e.xconfigure.width;
+                        window->width  = e.xconfigure.width;
                         window->height = e.xconfigure.height;
                         // NOTE: assumes GL context
                         glViewport(0, 0, window->width, window->height);

@@ -3,8 +3,8 @@
 
 typedef struct {
         EGLContext context;
-        EGLDisplay  display;
-        EGLSurface  surface;
+        EGLDisplay display;
+        EGLSurface surface;
 } GLctx;
 
 GLOBAL GLctx gl_ctx_create(NativeWindow* window);

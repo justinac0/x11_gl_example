@@ -36,6 +36,8 @@
 #include "src/window/window.h"
 #include "src/window/gl_ctx.h"
 #include "src/window/gl_ctx.c"
+#include "src/render/gl/shader.h"
+#include "src/render/gl/shader.c"
 
 #if defined(WINDOW_XLIB)
 #include "src/window/xlib_window.c"
