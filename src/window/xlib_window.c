@@ -24,21 +24,23 @@ GLOBAL NativeWindow window_create(const char* title, uint16_t width,
         Visual* visual = DefaultVisual(window.display, screen);
         Window  root   = RootWindow(window.display, screen);
 
+        /*
         Colormap colormap =
             XCreateColormap(window.display, root, visual, AllocNone);
+        */
 
         XSetWindowAttributes attr = {0};
         attr.event_mask = EnterWindowMask | LeaveWindowMask | KeyPressMask |
                           KeyReleaseMask | ButtonPressMask | ButtonReleaseMask |
                           StructureNotifyMask;
-        attr.colormap = colormap;
+        //attr.colormap = colormap;
 
         window.handle =
             XCreateWindow(window.display, root, 0, 0, width, height, 0,
                           DefaultDepth(window.display, screen), InputOutput,
-                          visual, CWColormap | CWEventMask, &attr);
-
-        XFreeColormap(window.display, colormap);
+                          visual, CWEventMask, &attr);
+        //CWColormap
+        //XFreeColormap(window.display, colormap);
 
         XMapWindow(window.display, window.handle);
 

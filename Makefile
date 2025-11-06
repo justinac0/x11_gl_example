@@ -1,5 +1,5 @@
-CFLAGS=-Wall -pedantic -Wno-unused-function -Wno-gnu-zero-variadic-macro-arguments -Wno-unused-function -Wno-undefined-internal -fsanitize=address -std=c99 -DWINDOW_XLIB
-LDFLAGS=-lEGL -lX11 -lGL
+CFLAGS=-Wall -pedantic -Wno-unused-function -Wno-gnu-zero-variadic-macro-arguments -Wno-unused-function -Wno-undefined-internal -fsanitize=address -std=c99 -DWINDOW_XCB
+LDFLAGS=-lEGL -lxcb -lGL
 
 all: build run
 
