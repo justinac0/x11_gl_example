@@ -1,7 +1,5 @@
 #define KEY_COUNT (256)
-static Key keys[KEY_COUNT];
-#undef KEY_COUNT
-
+INTERNAL Key keys[KEY_COUNT];
 KeyCode KEY_CODE_ESCAPE = 9;
 KeyCode KEY_CODE_W      = 25;
 KeyCode KEY_CODE_A      = 38;
@@ -12,6 +10,8 @@ KeyCode KEY_CODE_SPACE  = 65;
 GLOBAL NativeWindow window_create(const char* title, uint16_t width,
                                   uint16_t height) {
         assert(title);
+
+        memset(keys, 0, sizeof(Key) * KEY_COUNT);
 
         NativeWindow window = {0};
         window.width        = width;

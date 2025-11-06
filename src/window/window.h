@@ -3,6 +3,8 @@
 
 #if defined(WINDOW_XLIB)
 typedef Window NativeWindowHandle;
+#elif defined(WINDOW_XCB)
+typedef xcb_window_t NativeWindowHandle;
 #else
 #error "can't create window, platform not supported"
 #endif
@@ -15,6 +17,13 @@ struct NativeWindow {
         Atom     wm_delete_window;
         Atom     wm_name;
         Atom     wm_hints;
+#elif defined(WINDOW_XCB)
+        xcb_connection_t* connection;
+        xcb_intern_atom_reply_t* wm_protocols;
+        xcb_intern_atom_reply_t* wm_delete_window;
+        xcb_intern_atom_reply_t* wm_name;
+        xcb_intern_atom_reply_t* wm_hints;
+        const xcb_setup_t* setup;
 #endif
         const char*        title;
         uint16_t           width;
