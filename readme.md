@@ -11,6 +11,7 @@ together in my free time.
 ## thirdparty
 - glad: https://github.com/Dav1dde/glad
     - genereated all glad code through online generator, loader option enabled
+- cglm: https://cglm.readthedocs.io/en/latest/index.html
 
 ## todo
 - [ ] correctly set window properties WM_PROTO etc...

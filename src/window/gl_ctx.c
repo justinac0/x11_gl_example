@@ -5,7 +5,7 @@
 INTERNAL void gl_debug_callback_(GLenum source, GLenum type, GLuint id,
                                  GLenum severity, GLsizei length,
                                  const GLchar* message, const void* userParam) {
-        LOG_DEBUG("gl_debug_callback: %s\n", message);
+        LOG_DEBUG("gl_debug_callback: %s", message);
 }
 
 // NOTE: thanks to mmozeiko for the following gist, super helpful!
@@ -82,7 +82,7 @@ GLOBAL GLctx gl_ctx_create(NativeWindow* window) {
                     EGL_SAMPLE_BUFFERS,
                     1,
                     EGL_SAMPLES,
-                    4,
+                    8,
 
                     EGL_NONE,
                 };

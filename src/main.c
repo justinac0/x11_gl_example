@@ -1,3 +1,5 @@
+#include <cglm/cglm.h>
+
 int main(void) {
         log_set_stream(stderr);
 
@@ -13,7 +15,7 @@ int main(void) {
         glBindVertexArray(vao);
 
         static const GLfloat verts[] = {
-            -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
         };
 
         static const GLfloat colors[] = {
@@ -37,7 +39,13 @@ int main(void) {
         glEnableVertexAttribArray(1);
 
         GLint program = create_shader_program("shader.vert", "shader.frag");
+        
+        mat4 model, perspective, view;
+        glm_mat4_identity(model);
+        glm_mat4_identity(perspective);
+        glm_mat4_identity(view);
 
+        float i = 0;
         while (!window.should_close) {
                 if (window_read_key(KEY_CODE_ESCAPE, KEY_STATE_PRESSED)) {
                         window.should_close = true;
@@ -47,10 +55,20 @@ int main(void) {
                 glClearColor(0, 0, 0, 1);
 
                 glUseProgram(program);
+
+                glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, (float*)model);
+                glUniformMatrix4fv(glGetUniformLocation(program, "perspective"), 1, GL_FALSE, (float*)perspective);
+                glUniformMatrix4fv(glGetUniformLocation(program, "view"), 1, GL_FALSE, (float*)view);
+
                 glEnableVertexAttribArray(0);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo);
                 glDrawArrays(GL_TRIANGLES, 0, 3);
                 glDisableVertexAttribArray(0);
+
+                perspective[3][0] = sinf(i);
+                perspective[3][1] = cosf(i);
+
+                i += 0.01f;
 
                 gl_ctx_swapbuffers(&ctx);
                 window_poll_events(&window);
