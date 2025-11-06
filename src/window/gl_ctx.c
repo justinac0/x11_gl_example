@@ -82,7 +82,7 @@ GLOBAL GLctx gl_ctx_create(NativeWindow* window) {
                     EGL_SAMPLE_BUFFERS,
                     1,
                     EGL_SAMPLES,
-                    8,
+                    4,
 
                     EGL_NONE,
                 };
@@ -123,7 +123,7 @@ GLOBAL GLctx gl_ctx_create(NativeWindow* window) {
                     EGL_CONTEXT_MAJOR_VERSION,
                     4,
                     EGL_CONTEXT_MINOR_VERSION,
-                    6,
+                    5,
                     EGL_CONTEXT_OPENGL_PROFILE_MASK,
                     EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT,
                     EGL_CONTEXT_OPENGL_DEBUG,
