@@ -1,9 +1,16 @@
+
 // NOTE:
 // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDebugMessageCallback.xhtml
 // callback only supported on OpenGL version >= 4.3
 INTERNAL void gl_debug_callback_(GLenum source, GLenum type, GLuint id,
                                  GLenum severity, GLsizei length,
                                  const GLchar* message, const void* userParam) {
+        UNUSED(source);
+        UNUSED(type);
+        UNUSED(id);
+        UNUSED(severity);
+        UNUSED(length);
+        UNUSED(userParam);
         LOG_DEBUG("gl_debug_callback: %s", message);
 }
 
@@ -78,13 +85,11 @@ GLOBAL GLctx gl_ctx_create(NativeWindow* window) {
                     24,
                     EGL_STENCIL_SIZE,
                     8,
-                    EGL_NONE,
-                    /*
                     EGL_SAMPLE_BUFFERS,
                     1,
                     EGL_SAMPLES,
                     4,
-                    */
+                    EGL_NONE,
                 };
 
                 if (!eglChooseConfig(ctx.display, attr, configs, config_count,

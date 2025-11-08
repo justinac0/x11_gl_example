@@ -8,14 +8,18 @@ windowing code but hey, it works on my machine!
 This is definitely not production ready, just hacked this
 together in my free time.
 
+## building
+### Meson
+1. `meson setup builddir`
+2. `meson compile -C builddir`
+
 ## thirdparty
 - glad: https://github.com/Dav1dde/glad
     - genereated all glad code through online generator, loader option enabled
 - cglm: https://cglm.readthedocs.io/en/latest/index.html
 
 ## todo
-- [ ] display GPU/GL info 
+- [ ] display GPU/GL info
 - [ ] correctly set window properties WM_PROTO etc...
 - [ ] cleanup xcb and xlib code
 - [ ] fix memory leaks fomr 'libgallium'?
-

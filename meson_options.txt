@@ -1,0 +1,6 @@
+option('window_system',
+    type: 'combo',
+    choices: ['xlib', 'xcb', 'win32'],
+    value: 'xlib',
+    description: 'Select which windowing system to use'
+)

@@ -14,15 +14,14 @@
 
 ////////////////////////////////////
 /// GLAD specific
-#include "glad/egl.h"
+#include "thirdparty/glad/include/glad/egl.h"
 #include "thirdparty/glad/src/egl.c"
-#include "glad/gl.h"
+#include "thirdparty/glad/include/glad/gl.h"
 #include "thirdparty/glad/src/gl.c"
 
 ////////////////////////////////////
 /// PLATFORM
 #if defined(WINDOW_XLIB)
-#include <X11/X.h>
 #include <X11/Xlib.h>
 #elif defined(WINDOW_XCB)
 #include <xcb/xcb.h>
@@ -55,4 +54,3 @@
 
 #include <cglm/cglm.h>
 #include "main.c"
-

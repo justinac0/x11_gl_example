@@ -6,7 +6,7 @@ typedef Window NativeWindowHandle;
 #elif defined(WINDOW_XCB)
 typedef xcb_window_t NativeWindowHandle;
 #else
-#error "can't create window, platform not supported"
+#error "platform not supported"
 #endif
 
 typedef struct NativeWindow NativeWindow;
