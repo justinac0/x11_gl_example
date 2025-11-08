@@ -13,6 +13,11 @@
 #include <math.h>
 
 ////////////////////////////////////
+/// STB
+// #define STB_TRUETYPE_IMPLEMENTATION
+// #include "stb/stb_truetype.h"
+
+////////////////////////////////////
 /// GLAD specific
 #include "thirdparty/glad/include/glad/egl.h"
 #include "thirdparty/glad/src/egl.c"
