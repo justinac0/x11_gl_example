@@ -17,6 +17,9 @@ INTERNAL xcb_intern_atom_cookie_t intern_cookie(xcb_connection_t* connection,
 GLOBAL NativeWindow window_create(const char* title, uint16_t width,
                                   uint16_t height) {
         assert(title);
+
+        LOG_INFO("creating xcb window");
+
         memset(keys, 0, sizeof(Key) * KEY_COUNT);
 
         NativeWindow window = {0};

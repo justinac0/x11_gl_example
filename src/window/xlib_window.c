@@ -11,6 +11,8 @@ GLOBAL NativeWindow window_create(const char* title, uint16_t width,
                                   uint16_t height) {
         assert(title);
 
+        LOG_INFO("creating xlib window");
+
         memset(keys, 0, sizeof(Key) * KEY_COUNT);
 
         NativeWindow window = {0};

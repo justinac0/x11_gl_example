@@ -1,0 +1,5 @@
+CompileFlags:
+    Add:
+        - "-Isrc"
+        - "-Ithirdparty"
+        - "-Ithirdparty/glad/include"

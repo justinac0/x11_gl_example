@@ -1,24 +1,22 @@
 # TODO:
-#
 # helper commands for using meson
-# [x] setup builddir
-# 2. config builddir (window_system option etc...)
-# 3. compile targets (platform?)
-# 4. run executable
-# 5. cleanup builddir
-
-# NOTE:
-#
-# unity build seems to break how linting works?
-# TODO: fix this ^
-# TODO: migrate code to doris
-
+# [ ] Platform specific building
 
 BUILD_DIR ?= build
 EXECUTABLE ?= app
 
+OPTIONS ?= xcb
+
+
+export CC = clang
+# export CXX ?= clang++
+
 .PHONY: all
-all: $(BUILD_DIR)/$(EXECUTABLE)
+all: build $(OPTIONS) compile
+
+.PHONY: compile
+compile: | $(BUILD_DIR)
+	meson compile -C $(BUILD_DIR)
 
 .PHONY: run
 run: $(BUILD_DIR)/$(EXECUTABLE)
@@ -37,10 +35,8 @@ xcb: | $(BUILD_DIR)
 	meson configure -Dwindow_system='xcb' $(BUILD_DIR)
 
 .PHONY: win32
+win32: | $(BUILD_DIR)
 	meson configure -Dwindow_system='win32' $(BUILD_DIR)
 
-$(BUILD_DIR)/$(EXECUTABLE): | $(BUILD_DIR)
-	meson compile -C $(BUILD_DIR) # $(EXECUTABLE)
-
 $(BUILD_DIR):
-	meson setup $(BUILD_DIR)
+	meson setup $(BUILD_DIR) --unity=on

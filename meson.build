@@ -32,7 +32,7 @@ cflags = [
   # '-Wshadow',
   '-Wpedantic',
   '-Wno-unused-function',
-  # '-Wno-gnu-zero-variadic-macro-arguments',
+  '-Wno-gnu-zero-variadic-macro-arguments',
   '-Wno-unused-function',
   '-Wno-undefined-internal',
   # '-fsanitize=address',
