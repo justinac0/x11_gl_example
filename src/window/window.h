@@ -22,64 +22,71 @@ typedef xcb_window_t NativeWindowHandle;
 #endif
 
 typedef enum {
-    MOUSE_BUTTON_LEFT,
-    MOUSE_BUTTON_RIGHT,
-    MOUSE_BUTTON_COUNT,
+        MOUSE_BUTTON_LEFT,
+        MOUSE_BUTTON_RIGHT,
+        MOUSE_BUTTON_COUNT,
 } MouseButton;
 
 typedef struct {
-    uint16_t x, y;
-    // TODO(mitch): macro for bitmap
-    uint8_t buttons[(MOUSE_BUTTON_COUNT / 8) + (MOUSE_BUTTON_COUNT % 8 ? 1 : 0)];
+        uint16_t x, y;
+        // TODO(mitch): macro for bitmap
+        uint8_t buttons[(MOUSE_BUTTON_COUNT / 8) + (MOUSE_BUTTON_COUNT % 8 ? 1 : 0)];
 } NativeMouse;
 
 GLOBAL bool window_read_mouse_button(const NativeMouse* mouse, MouseButton button) {
-    if (button >= MOUSE_BUTTON_COUNT) {
-        return false;
-    }
+        if (button >= MOUSE_BUTTON_COUNT) {
+                return false;
+        }
 
-    return BITFIELD_CHECK(mouse->buttons, button) != 0;
+        return BITFIELD_CHECK(mouse->buttons, button) != 0;
 }
 
+// NOTE: window callbacks
 typedef struct NativeWindow NativeWindow;
+typedef void (*MouseMotionFunc)(NativeWindow* window, uint16_t x, uint16_t y);
+typedef void (*DeleteWindowFunc)(NativeWindow* window);
+
+typedef struct {
+        MouseMotionFunc mouse_motion;
+        DeleteWindowFunc delete_window;
+} NativeWindowCallbacks;
+
 struct NativeWindow {
 // TODO(justin): https://specifications.freedesktop.org/wm/1.5/index.html hints
 // for WM to implement/lookat
 #if defined(WINDOW_XLIB)
-    Display* display;
-    Atom     wm_protocols;
-    Atom     wm_delete_window;
-    Atom     wm_name;
-    Atom     wm_hints;
+        Display* display;
+        Atom     wm_protocols;
+        Atom     wm_delete_window;
+        Atom     wm_name;
+        Atom     wm_hints;
 #elif defined(WINDOW_XCB)
-    xcb_connection_t*        display;
-    xcb_intern_atom_reply_t* wm_protocols;
-    xcb_intern_atom_reply_t* wm_delete_window;
-    xcb_intern_atom_reply_t* wm_name;
-    xcb_intern_atom_reply_t* wm_hints;
-    const xcb_setup_t*       setup;
+        xcb_connection_t*        display;
+        xcb_intern_atom_reply_t* wm_protocols;
+        xcb_intern_atom_reply_t* wm_delete_window;
+        xcb_intern_atom_reply_t* wm_name;
+        xcb_intern_atom_reply_t* wm_hints;
+        const xcb_setup_t*       setup;
 #endif
-    const char*        title;
-    uint16_t           width;
-    uint16_t           height;
-    NativeMouse        mouse;
-    bool               should_close;
-    NativeWindowHandle handle;
+        const char*           title;
+        uint16_t              width;
+        uint16_t              height;
+        NativeMouse           mouse;
+        bool                  should_close;
+        NativeWindowHandle    handle;
+        NativeWindowCallbacks callbacks;
+        // Callbacks
 };
 
-// XCB_EVENT_MASK_BUTTON_PRESS
-// XCB_EVENT_MASK_BUTTON_RELEASE
-// xcb_button_press_event_t https://www.x.org/archive/X11R7.5/doc/libxcb/tutorial/index.html
-
 typedef enum {
-    KEY_MOD_NONE,
-    KEY_MOD_LSHIFT,
+        KEY_MOD_NONE,
+        KEY_MOD_LSHIFT,
 } KeyMod;
 
 typedef enum {
-    KEY_STATE_NONE,
-    KEY_STATE_PRESSED,
-    KEY_STATE_RELEASED,
+        KEY_STATE_NONE,
+        KEY_STATE_PRESSED,
+        KEY_STATE_RELEASED,
 } KeyState;
 
 typedef uint8_t KeyCode;
@@ -91,8 +98,8 @@ extern KeyCode  KEY_CODE_D;
 extern KeyCode  KEY_CODE_SPACE;
 
 typedef struct {
-    KeyCode  code;
-    KeyState state;
+        KeyCode  code;
+        KeyState state;
 } Key;
 
 GLOBAL NativeWindow window_create(const char* title, uint16_t width, uint16_t height);

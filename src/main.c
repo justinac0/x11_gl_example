@@ -5,13 +5,33 @@
 #include <glad/gl.h>
 #include <cglm/cglm.h>
 
+#include <stb/stb_truetype.h>
+#include <stdint.h>
+
+void mouse_move(NativeWindow* window, uint16_t x, uint16_t y) {
+        UNUSED(window);
+        LOG_INFO("%d %d", x, y);
+}
+
+void delete_window(NativeWindow* window) {
+        window->should_close = true;
+}
+
 int main(void) {
     log_set_stream(stderr);
 
     NativeWindow window = window_create("xlib_gl_example", 640, 480);
+    window.callbacks.mouse_motion = mouse_move;
+    window.callbacks.delete_window = delete_window;
+
     GLctx        ctx    = gl_ctx_create(&window);
     gl_ctx_make_current(&ctx);
     gl_ctx_vsync(&ctx);
+
+    { // set GL state
+       glEnable(GL_BLEND);
+       glEnable(GL_DEPTH_TEST);
+    }
 
     // NOTE(justin):
     // https://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
@@ -54,9 +74,12 @@ int main(void) {
 
     glm_perspective_default((float) window.width / (float) window.height, perspective);
 
+    // NOTE:
+    // camera
+    vec3 camera_pos; 
+
     double i = 0;
     while (!window.should_close) {
-
         const bool left_mouse_down = window_read_mouse_button(&window.mouse, MOUSE_BUTTON_LEFT);
         const bool right_mouse_down = window_read_mouse_button(&window.mouse, MOUSE_BUTTON_RIGHT);
         const uint16_t mouse_x = window.mouse.x;
@@ -73,8 +96,6 @@ int main(void) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0, 0.15, 0.4, 1);
 
-        glm_spin(model, 0.01f, (vec3){0, 1, 0});
-
         glUseProgram(program);
 
         glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, (float*) model);
@@ -85,11 +106,6 @@ int main(void) {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glDisableVertexAttribArray(0);
-
-        perspective[3][0] = sinf(i);
-        perspective[3][1] = cosf(i);
-
-        i += 0.01f;
 
         gl_ctx_swapbuffers(&ctx);
         window_poll_events(&window);

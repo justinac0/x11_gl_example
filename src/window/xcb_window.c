@@ -93,8 +93,7 @@ GLOBAL void window_poll_events(NativeWindow* window) {
             case XCB_CLIENT_MESSAGE: {
                 xcb_client_message_event_t* msg = (xcb_client_message_event_t*) event;
                 if (msg->data.data32[0] == (*window->wm_delete_window).atom) {
-                    LOG_WARNING("wm_delete_window called");
-                    window->should_close = true;
+                    window->callbacks.delete_window(window);
                 }
             } break;
 
@@ -102,7 +101,7 @@ GLOBAL void window_poll_events(NativeWindow* window) {
                 xcb_motion_notify_event_t* ne = (xcb_motion_notify_event_t*) event;
                 window->mouse.x               = ne->event_x;
                 window->mouse.y               = ne->event_y;
-                LOG_INFO("mp: %d %d", window->mouse.x, window->mouse.y);
+                window->callbacks.mouse_motion(window, ne->event_x, ne->event_y);
             } break;
 
             case XCB_BUTTON_PRESS: {
@@ -110,11 +109,15 @@ GLOBAL void window_poll_events(NativeWindow* window) {
 
                 MouseButton button = MOUSE_BUTTON_COUNT;
                 switch (kb->detail) {
-                    case 1: button = MOUSE_BUTTON_LEFT; break;
-                    case 3: button = MOUSE_BUTTON_RIGHT; break;
+                    case 1:
+                        button = MOUSE_BUTTON_LEFT;
+                        break;
+                    case 3:
+                        button = MOUSE_BUTTON_RIGHT;
+                        break;
                 }
 
-                LOG_DEBUG("button press: %d", kb->detail);
+                // LOG_DEBUG("button press: %d", kb->detail);
 
                 if (button != MOUSE_BUTTON_COUNT) {
                     BITFIELD_SET(window->mouse.buttons, button);
@@ -126,11 +129,15 @@ GLOBAL void window_poll_events(NativeWindow* window) {
 
                 MouseButton button = MOUSE_BUTTON_COUNT;
                 switch (kb->detail) {
-                    case 1: button = MOUSE_BUTTON_LEFT; break;
-                    case 3: button = MOUSE_BUTTON_RIGHT; break;
+                    case 1:
+                        button = MOUSE_BUTTON_LEFT;
+                        break;
+                    case 3:
+                        button = MOUSE_BUTTON_RIGHT;
+                        break;
                 }
 
-                LOG_DEBUG("button release: %d", kb->detail);
+                // LOG_DEBUG("button release: %d", kb->detail);
 
                 if (button != MOUSE_BUTTON_COUNT) {
                     BITFIELD_CLEAR(window->mouse.buttons, button);

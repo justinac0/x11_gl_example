@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
-INTERNAL char* read_file(char* filePath) {
-    FILE* fileStream = fopen(filePath, "r");
+GLOBAL char* read_file(char* filePath, const char* mode) {
+    FILE* fileStream = fopen(filePath, mode);
     if (!fileStream) {
         return NULL;
     }
@@ -29,8 +29,8 @@ INTERNAL char* read_file(char* filePath) {
 }
 
 GLOBAL GLuint create_shader_program(char* vertexFilePath, char* fragmentFilePath) {
-    char* vertexSource = read_file(vertexFilePath);
-    char* fragmentSource = read_file(fragmentFilePath);
+    char* vertexSource = read_file(vertexFilePath, "r");
+    char* fragmentSource = read_file(fragmentFilePath, "r");
 
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 

@@ -1,3 +1,4 @@
+#include "base.h"
 #include "window.h"
 #include "log/log.h"
 
@@ -79,8 +80,7 @@ GLOBAL void window_poll_events(NativeWindow* window) {
 
             case ClientMessage: {
                 if ((Atom) e.xclient.data.l[0] == window->wm_delete_window) {
-                    LOG_WARNING("wm_delete_window called");
-                    window->should_close = true;
+                    window->callbacks.delete_window(window);
                 }
             } break;
 
@@ -92,19 +92,24 @@ GLOBAL void window_poll_events(NativeWindow* window) {
             } break;
 
             case MotionNotify: {
+                assert(window->callbacks.mouse_motion);
                 window->mouse.x = e.xmotion.x;
                 window->mouse.y = e.xmotion.y;
-                LOG_INFO("mp: %d %d", window->mouse.x, window->mouse.y);
+                window->callbacks.mouse_motion(window, window->mouse.x, window->mouse.y);
             } break;
 
             case ButtonPress: {
                 MouseButton button = MOUSE_BUTTON_COUNT;
                 switch (e.xbutton.button) {
-                    case 1: button = MOUSE_BUTTON_LEFT; break;
-                    case 3: button = MOUSE_BUTTON_RIGHT; break;
+                    case 1:
+                        button = MOUSE_BUTTON_LEFT;
+                        break;
+                    case 3:
+                        button = MOUSE_BUTTON_RIGHT;
+                        break;
                 }
 
-                LOG_DEBUG("button press: %d", e.xbutton.button);
+                // LOG_DEBUG("button press: %d", e.xbutton.button);
 
                 if (button != MOUSE_BUTTON_COUNT) {
                     BITFIELD_SET(window->mouse.buttons, button);
@@ -114,11 +119,15 @@ GLOBAL void window_poll_events(NativeWindow* window) {
             case ButtonRelease: {
                 MouseButton button = MOUSE_BUTTON_COUNT;
                 switch (e.xbutton.button) {
-                    case 1: button = MOUSE_BUTTON_LEFT; break;
-                    case 3: button = MOUSE_BUTTON_RIGHT; break;
+                    case 1:
+                        button = MOUSE_BUTTON_LEFT;
+                        break;
+                    case 3:
+                        button = MOUSE_BUTTON_RIGHT;
+                        break;
                 }
 
-                LOG_DEBUG("button release: %d", e.xbutton.button);
+                // LOG_DEBUG("button release: %d", e.xbutton.button);
 
                 if (button != MOUSE_BUTTON_COUNT) {
                     BITFIELD_CLEAR(window->mouse.buttons, button);
