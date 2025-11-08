@@ -148,7 +148,7 @@ GLOBAL void gl_ctx_destroy(GLctx* ctx) {
 inline GLOBAL void gl_ctx_vsync(GLctx* ctx) {
         int        enabled = 1;
         EGLBoolean ok      = eglSwapInterval(ctx->display, enabled);
-        if (ok != True) {
+        if (ok != true) {
                 LOG_FATAL("failed to enable vsync");
         }
 }
@@ -157,7 +157,7 @@ inline GLOBAL void gl_ctx_make_current(GLctx* ctx) {
         assert(ctx);
         EGLBoolean ok = eglMakeCurrent(ctx->display, ctx->surface, ctx->surface,
                                        ctx->context);
-        if (ok != True) {
+        if (ok != true) {
                 LOG_FATAL("failed to make egl context current");
         }
 
