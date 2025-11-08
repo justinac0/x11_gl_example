@@ -1,6 +1,5 @@
 ////////////////////////////////////
 /// STD
-
 #include <assert.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -53,4 +52,7 @@
 #include "src/window/gl_ctx.c"
 #include "src/render/gl/shader.h"
 #include "src/render/gl/shader.c"
+
+#include <cglm/cglm.h>
 #include "main.c"
+

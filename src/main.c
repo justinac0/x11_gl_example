@@ -1,11 +1,10 @@
-#include <cglm/cglm.h>
-
 int main(void) {
         log_set_stream(stderr);
 
         NativeWindow window = window_create("xlib_gl_example", 640, 480);
         GLctx        ctx    = gl_ctx_create(&window);
         gl_ctx_make_current(&ctx);
+        gl_ctx_vsync(&ctx);
 
         // NOTE(justin):
         // https://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
@@ -20,9 +19,7 @@ int main(void) {
         };
 
         static const GLfloat colors[] = {
-                1.0f, 0.0f, 0.0f,
-                0.0f, 1.0f, 0.0f,
-                0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
         };
 
         GLuint vbo;
@@ -40,7 +37,7 @@ int main(void) {
         glEnableVertexAttribArray(1);
 
         GLint program = create_shader_program("shader.vert", "shader.frag");
-        
+
         mat4 model, perspective, view;
         glm_mat4_identity(model);
         glm_mat4_identity(perspective);
@@ -48,9 +45,10 @@ int main(void) {
 
         glm_lookat((vec3){0, 0, 4}, (vec4){0, 0, 0}, (vec3){0, 1, 0}, view);
 
-        glm_perspective_default((float)window.width/(float)window.height, perspective);
+        glm_perspective_default((float) window.width / (float) window.height,
+                                perspective);
 
-        float i = 0;
+        double i = 0;
         while (!window.should_close) {
                 if (window_read_key(KEY_CODE_ESCAPE, KEY_STATE_PRESSED)) {
                         window.should_close = true;
@@ -59,13 +57,16 @@ int main(void) {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 glClearColor(0, 0, 0, 1);
 
-                glm_spin(model, 0.01f, (vec3){0,1,0});
+                glm_spin(model, 0.01f, (vec3){0, 1, 0});
 
                 glUseProgram(program);
 
-                glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, (float*)model);
-                glUniformMatrix4fv(glGetUniformLocation(program, "perspective"), 1, GL_FALSE, (float*)perspective);
-                glUniformMatrix4fv(glGetUniformLocation(program, "view"), 1, GL_FALSE, (float*)view);
+                glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1,
+                                   GL_FALSE, (float*) model);
+                glUniformMatrix4fv(glGetUniformLocation(program, "perspective"),
+                                   1, GL_FALSE, (float*) perspective);
+                glUniformMatrix4fv(glGetUniformLocation(program, "view"), 1,
+                                   GL_FALSE, (float*) view);
 
                 glEnableVertexAttribArray(0);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo);

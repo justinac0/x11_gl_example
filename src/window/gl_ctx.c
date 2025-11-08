@@ -78,12 +78,13 @@ GLOBAL GLctx gl_ctx_create(NativeWindow* window) {
                     24,
                     EGL_STENCIL_SIZE,
                     8,
+                    EGL_NONE,
+                    /*
                     EGL_SAMPLE_BUFFERS,
                     1,
                     EGL_SAMPLES,
                     4,
-
-                    EGL_NONE,
+                    */
                 };
 
                 if (!eglChooseConfig(ctx.display, attr, configs, config_count,
@@ -95,8 +96,6 @@ GLOBAL GLctx gl_ctx_create(NativeWindow* window) {
                 for (EGLint i = 0; i < config_count; i++) {
                         EGLAttrib attr[] = {
                             EGL_RENDER_BUFFER,
-                            // NOTE(justin): can have different frame buffer
-                            // color formats
                             EGL_BACK_BUFFER,
                             EGL_NONE,
                         };
@@ -146,6 +145,14 @@ GLOBAL void gl_ctx_destroy(GLctx* ctx) {
         eglDestroySurface(ctx->display, ctx->surface);
 }
 
+inline GLOBAL void gl_ctx_vsync(GLctx* ctx) {
+        int        enabled = 1;
+        EGLBoolean ok      = eglSwapInterval(ctx->display, enabled);
+        if (ok != True) {
+                LOG_FATAL("failed to enable vsync");
+        }
+}
+
 inline GLOBAL void gl_ctx_make_current(GLctx* ctx) {
         assert(ctx);
         EGLBoolean ok = eglMakeCurrent(ctx->display, ctx->surface, ctx->surface,
@@ -154,23 +161,23 @@ inline GLOBAL void gl_ctx_make_current(GLctx* ctx) {
                 LOG_FATAL("failed to make egl context current");
         }
 
-        int gl_version = gladLoaderLoadGL();
-        //LOG_INFO("Supported OpenGL v%d.%d", GLAD_VERSION_MAJOR(gl_version),
-        //         GLAD_VERSION_MINOR(gl_version));
+        {  // Load gl funcs and enable debugger
+                int gl_version = gladLoaderLoadGL();
+                UNUSED(gl_version);
 
-        // ref: https://stackoverflow.com/questions/68784829/how-print-out-the-opengl-version-of-a-gpu-and-put-it-in-a-string-in-opengl-and-c#68784846
-        LOG_INFO("OpenGL Vendor: %s", glGetString(GL_VENDOR));
-        LOG_INFO("OpenGL Renderer: %s", glGetString(GL_RENDERER));
-        LOG_INFO("OpenGL Version: %s", glGetString(GL_VERSION));
-        LOG_INFO("OpenGL Shading Language Version: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+                // ref:
+                // https://stackoverflow.com/questions/68784829/how-print-out-the-opengl-version-of-a-gpu-and-put-it-in-a-string-in-opengl-and-c#68784846
+                LOG_INFO("OpenGL Vendor: %s", glGetString(GL_VENDOR));
+                LOG_INFO("OpenGL Renderer: %s", glGetString(GL_RENDERER));
+                LOG_INFO("OpenGL Version: %s", glGetString(GL_VERSION));
+                LOG_INFO("OpenGL Shading Language Version: %s",
+                         glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-        glDebugMessageCallback(&gl_debug_callback_, NULL);
-        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-
-        assert(ok);
+                glDebugMessageCallback(&gl_debug_callback_, NULL);
+                glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        }
 }
 
 inline GLOBAL void gl_ctx_swapbuffers(GLctx* ctx) {
         eglSwapBuffers(ctx->display, ctx->surface);
 }
-

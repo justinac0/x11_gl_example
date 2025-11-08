@@ -18,17 +18,20 @@ GLOBAL void  log_set_stream(FILE* stream);
 GLOBAL FILE* log_get_stream(void);
 GLOBAL void  log_printf(LogLevel level, const char* fmt, ...);
 
-#define LOG_FATAL(fmt, ...)                                     \
-        {                                                       \
-                log_printf(LOG_LEVEL_FATAL,                     \
-                           LOCATION_INFO ANSI_COLOUR_RED        \
-                           " [fatal] > " ANSI_COLOUR_CLEAR fmt, \
-                           "\n", ##__VA_ARGS__);                \
-                if (log_get_stream() != NULL) {                 \
-                        fflush(log_get_stream());               \
-                        fclose(log_get_stream());               \
-                }                                               \
-                abort();                                        \
+// NOTE: sleep is platform specifig
+// TODO(justin): write helper funcs for time
+#include <unistd.h>
+#define LOG_FATAL(fmt, ...)                                          \
+        {                                                            \
+                log_printf(LOG_LEVEL_FATAL,                          \
+                           LOCATION_INFO ANSI_COLOUR_RED             \
+                           " [fatal] " ANSI_COLOUR_CLEAR fmt,        \
+                           "\n", ##__VA_ARGS__);                     \
+                if (log_get_stream() != NULL) {                      \
+                        fflush(log_get_stream());                    \
+                        fclose(log_get_stream());                    \
+                }                                                    \
+                for (;;) { sleep(1); /* pause program execution */ } \
         }
 
 #define LOG_ERROR(fmt, ...)                                \
