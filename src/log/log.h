@@ -1,6 +1,9 @@
 #ifndef LOG_H
 #define LOG_H
 
+#include "base.h"
+#include <stdio.h>
+
 // By default, log everything
 #ifndef LOG_LEVEL
 #define LOG_LEVEL LOG_LEVEL_DEBUG

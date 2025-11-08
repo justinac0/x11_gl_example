@@ -1,4 +1,9 @@
+#include "gl_ctx.h"
 
+#include "log/log.h"
+#include <stdlib.h>
+#include <stdbool.h>
+#include <assert.h>
 // NOTE:
 // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDebugMessageCallback.xhtml
 // callback only supported on OpenGL version >= 4.3

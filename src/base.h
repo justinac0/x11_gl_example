@@ -11,6 +11,7 @@
 #define STRINGIFY_(s) #s
 #define STRINGIFY(s) STRINGIFY_(s)
 
+// NOTE(...): platform specific possibly?
 #define ANSI_COLOUR_CLEAR        "\033[0m"
 #define ANSI_COLOUR_BLACK        "\033[0;30m"
 #define ANSI_COLOUR_RED          "\033[0;31m"

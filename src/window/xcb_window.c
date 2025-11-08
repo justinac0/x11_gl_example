@@ -1,4 +1,14 @@
+#include "window.h"
+#include "log/log.h"
+
+#include <glad/gl.h>
+#include <string.h>
+#include <assert.h>
+#include <stdlib.h>
+#include <xcb/xproto.h>
+
 #define KEY_COUNT (256)
+// NOTE(justin): keys should be attached to individual window structs
 INTERNAL Key keys[KEY_COUNT];
 KeyCode      KEY_CODE_ESCAPE = 9;
 KeyCode      KEY_CODE_W      = 25;
@@ -26,48 +36,47 @@ GLOBAL NativeWindow window_create(const char* title, uint16_t width,
         window.width        = width;
         window.height       = height;
 
-        window.connection = xcb_connect(NULL, NULL);
-        assert(window.connection);
+        window.display = xcb_connect(NULL, NULL);
+        assert(window.display);
 
         uint32_t attr =
             XCB_EVENT_MASK_BUTTON_PRESS | XCB_EVENT_MASK_BUTTON_RELEASE |
             XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_KEY_RELEASE |
             XCB_EVENT_MASK_ENTER_WINDOW | XCB_EVENT_MASK_LEAVE_WINDOW |
-            XCB_EVENT_MASK_STRUCTURE_NOTIFY;
+            XCB_EVENT_MASK_STRUCTURE_NOTIFY | XCB_EVENT_MASK_POINTER_MOTION;
 
         xcb_screen_t* screen =
-            xcb_setup_roots_iterator(xcb_get_setup(window.connection)).data;
+            xcb_setup_roots_iterator(xcb_get_setup(window.display)).data;
 
-        window.handle = xcb_generate_id(window.connection);
-        xcb_create_window(window.connection, XCB_COPY_FROM_PARENT,
-                          window.handle, screen->root, 0, 0, window.width,
-                          window.height, 0, XCB_WINDOW_CLASS_INPUT_OUTPUT,
-                          screen->root_visual, XCB_CW_EVENT_MASK, &attr);
-        xcb_map_window(window.connection, window.handle);
+        window.handle = xcb_generate_id(window.display);
+        xcb_create_window(window.display, XCB_COPY_FROM_PARENT, window.handle,
+                          screen->root, 0, 0, window.width, window.height, 0,
+                          XCB_WINDOW_CLASS_INPUT_OUTPUT, screen->root_visual,
+                          XCB_CW_EVENT_MASK, &attr);
+        xcb_map_window(window.display, window.handle);
 
         xcb_intern_atom_cookie_t protocols_cookie =
-            intern_cookie(window.connection, true, "WM_PROTOCOLS");
+            intern_cookie(window.display, true, "WM_PROTOCOLS");
         xcb_intern_atom_cookie_t delete_window_cookie =
-            intern_cookie(window.connection, 0, "WM_DELETE_WINDOW");
+            intern_cookie(window.display, 0, "WM_DELETE_WINDOW");
         xcb_intern_atom_cookie_t name_cookie =
-            intern_cookie(window.connection, 0, "WM_NAME");
+            intern_cookie(window.display, 0, "WM_NAME");
 
         window.wm_protocols =
-            xcb_intern_atom_reply(window.connection, protocols_cookie, 0);
+            xcb_intern_atom_reply(window.display, protocols_cookie, 0);
         window.wm_delete_window =
-            xcb_intern_atom_reply(window.connection, delete_window_cookie, 0);
-        window.wm_name =
-            xcb_intern_atom_reply(window.connection, name_cookie, 0);
+            xcb_intern_atom_reply(window.display, delete_window_cookie, 0);
+        window.wm_name = xcb_intern_atom_reply(window.display, name_cookie, 0);
 
-        xcb_change_property(window.connection, XCB_PROP_MODE_REPLACE,
+        xcb_change_property(window.display, XCB_PROP_MODE_REPLACE,
                             window.handle, (*window.wm_protocols).atom, 4, 32,
                             1, &(*window.wm_delete_window).atom);
 
-        xcb_change_property(window.connection, XCB_PROP_MODE_REPLACE,
+        xcb_change_property(window.display, XCB_PROP_MODE_REPLACE,
                             window.handle, XCB_ATOM_WM_CLASS, XCB_ATOM_STRING,
                             8, (uint32_t) strlen(title), title);
 
-        xcb_flush(window.connection);
+        xcb_flush(window.display);
 
         return window;
 }
@@ -78,12 +87,12 @@ GLOBAL void window_destroy(NativeWindow* window) {
         free(window->wm_delete_window);
         free(window->wm_name);
 
-        xcb_disconnect(window->connection);
+        xcb_disconnect(window->display);
 }
 
 GLOBAL void window_poll_events(NativeWindow* window) {
         xcb_generic_event_t* event = NULL;
-        while ((event = xcb_poll_for_event(window->connection))) {
+        while ((event = xcb_poll_for_event(window->display))) {
                 switch (XCB_EVENT_RESPONSE_TYPE(event)) {
                         default: {
                         } break;
@@ -104,6 +113,15 @@ GLOBAL void window_poll_events(NativeWindow* window) {
                                         LOG_WARNING("wm_delete_window called");
                                         window->should_close = true;
                                 }
+                        } break;
+
+                        case XCB_MOTION_NOTIFY: {
+                                xcb_motion_notify_event_t* ne =
+                                    (xcb_motion_notify_event_t*) event;
+                                window->mouse_x = ne->event_x;
+                                window->mouse_y = ne->event_y;
+                                LOG_INFO("mp: %d %d", window->mouse_x,
+                                         window->mouse_y);
                         } break;
 
                         case XCB_KEY_PRESS: {

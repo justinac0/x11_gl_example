@@ -1,3 +1,12 @@
+#include "window.h"
+#include "log/log.h"
+
+#include <X11/X.h>
+#include <glad/gl.h>
+#include <string.h>
+#include <assert.h>
+#include <stdlib.h>
+
 #define KEY_COUNT (256)
 INTERNAL Key keys[KEY_COUNT];
 KeyCode      KEY_CODE_ESCAPE = 9;
@@ -29,7 +38,7 @@ GLOBAL NativeWindow window_create(const char* title, uint16_t width,
         XSetWindowAttributes attr = {0};
         attr.event_mask = EnterWindowMask | LeaveWindowMask | KeyPressMask |
                           KeyReleaseMask | ButtonPressMask | ButtonReleaseMask |
-                          StructureNotifyMask;
+                          StructureNotifyMask | PointerMotionMask;
 
         window.handle = XCreateWindow(window.display, root, 0, 0, width, height,
                                       0, DefaultDepth(window.display, screen),
@@ -63,38 +72,46 @@ GLOBAL void window_destroy(NativeWindow* window) {
 GLOBAL void window_poll_events(NativeWindow* window) {
         assert(window);
 
-        int pending = XPending(window->display);
-        if (pending == 0)
-                return;
+        // NOTE(justin): Look into what I should really do with
+        // multiple events queues up in one frame. At the moment
+        // we will just consume all events.
+        while (XPending(window->display)) {
+                XEvent e;
+                XNextEvent(window->display, &e);
+                switch (e.type) {
+                        default: {
+                        } break;
 
-        XEvent e;
-        XNextEvent(window->display, &e);
-        switch (e.type) {
-                default: {
-                } break;
+                        case ClientMessage: {
+                                if ((Atom) e.xclient.data.l[0] ==
+                                    window->wm_delete_window) {
+                                        LOG_WARNING("wm_delete_window called");
+                                        window->should_close = true;
+                                }
+                        } break;
 
-                case ClientMessage: {
-                        if ((Atom) e.xclient.data.l[0] ==
-                            window->wm_delete_window) {
-                                LOG_WARNING("wm_delete_window called");
-                                window->should_close = true;
-                        }
-                } break;
+                        case ConfigureNotify: {
+                                window->width  = e.xconfigure.width;
+                                window->height = e.xconfigure.height;
+                                // NOTE: assumes GL context
+                                glViewport(0, 0, window->width, window->height);
+                        } break;
 
-                case ConfigureNotify: {
-                        window->width  = e.xconfigure.width;
-                        window->height = e.xconfigure.height;
-                        // NOTE: assumes GL context
-                        glViewport(0, 0, window->width, window->height);
-                } break;
+                        case MotionNotify: {
+                                window->mouse_x = e.xmotion.x;
+                                window->mouse_y = e.xmotion.y;
+                                LOG_INFO("mp: %d %d", window->mouse_x,
+                                         window->mouse_y);
+                        } break;
 
-                case KeyPress: {
-                        keys[e.xkey.keycode].state = KEY_STATE_PRESSED;
-                } break;
+                        case KeyPress: {
+                                keys[e.xkey.keycode].state = KEY_STATE_PRESSED;
+                        } break;
 
-                case KeyRelease: {
-                        keys[e.xkey.keycode].state = KEY_STATE_RELEASED;
-                } break;
+                        case KeyRelease: {
+                                keys[e.xkey.keycode].state = KEY_STATE_RELEASED;
+                        } break;
+                }
         }
 }
 

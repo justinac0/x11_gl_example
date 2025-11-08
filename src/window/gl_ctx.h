@@ -1,6 +1,11 @@
 #ifndef GL_CTX_H
 #define GL_CTX_H
 
+#include <glad/egl.h>
+#include <glad/gl.h>
+#include "window/window.h"
+#include "base.h"
+
 typedef struct {
         EGLContext context;
         EGLDisplay display;

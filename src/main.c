@@ -1,3 +1,10 @@
+#include "log/log.h"
+#include "window/window.h"
+#include "window/gl_ctx.h"
+#include "render/gl/shader.h"
+#include <glad/gl.h>
+#include <cglm/cglm.h>
+
 int main(void) {
         log_set_stream(stderr);
 

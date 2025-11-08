@@ -1,3 +1,8 @@
+#include "log.h"
+#include <stdarg.h>
+#include <time.h>
+#include <sys/time.h>
+
 INTERNAL FILE* log_stream = NULL;
 
 GLOBAL void log_set_stream(FILE* stream) {

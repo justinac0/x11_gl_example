@@ -1,11 +1,21 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include "base.h"
+#include <stdbool.h>
+
 #if defined(WINDOW_XLIB)
+#include <X11/X.h>
+#include <X11/Xlib.h>
 typedef Window NativeWindowHandle;
 #elif defined(WINDOW_XCB)
+#include <xcb/xcb.h>
+#include <xcb/xcb_event.h>
+#include <xcb/xcb_keysyms.h>
+#include <xcb/xproto.h>
 typedef xcb_window_t NativeWindowHandle;
 #else
+// TODO(justin): support for xcb, wayland, winapi, ...
 #error "platform not supported"
 #endif
 
@@ -20,7 +30,7 @@ struct NativeWindow {
         Atom     wm_name;
         Atom     wm_hints;
 #elif defined(WINDOW_XCB)
-        xcb_connection_t*        connection;
+        xcb_connection_t*        display;
         xcb_intern_atom_reply_t* wm_protocols;
         xcb_intern_atom_reply_t* wm_delete_window;
         xcb_intern_atom_reply_t* wm_name;
@@ -30,6 +40,8 @@ struct NativeWindow {
         const char*        title;
         uint16_t           width;
         uint16_t           height;
+        uint16_t           mouse_x;
+        uint16_t           mouse_y;
         bool               should_close;
         NativeWindowHandle handle;
 };

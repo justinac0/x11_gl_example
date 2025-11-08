@@ -1,3 +1,9 @@
+#include "shader.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
 INTERNAL char* read_file(char* filePath) {
     FILE* fileStream = fopen(filePath, "r");
     if (!fileStream) {
@@ -111,5 +117,3 @@ GLOBAL GLuint create_shader_program(char* vertexFilePath, char* fragmentFilePath
 
     return program;
 }
-
-
