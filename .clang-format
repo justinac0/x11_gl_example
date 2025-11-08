@@ -1,6 +1,6 @@
 BasedOnStyle: Google
-IndentWidth: 8
-ColumnLimit: 80
+IndentWidth: 4
+ColumnLimit: 120
 AlignConsecutiveMacros: true
 AlignEscapedNewlines: true
 AlignConsecutiveAssignments: true
@@ -10,7 +10,7 @@ AlignOperands: true
 AllowShortBlocksOnASingleLine: true
 AllowShortFunctionsOnASingleLine: false
 KeepEmptyLinesAtTheStartOfBlocks: false
-SortIncludes: false 
+SortIncludes: false
 SpaceAfterCStyleCast: true
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortIfStatementsOnASingleLine: false

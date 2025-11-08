@@ -7,9 +7,9 @@
 #include "base.h"
 
 typedef struct {
-        EGLContext context;
-        EGLDisplay display;
-        EGLSurface surface;
+    EGLContext context;
+    EGLDisplay display;
+    EGLSurface surface;
 } GLctx;
 
 GLOBAL GLctx gl_ctx_create(NativeWindow* window);
