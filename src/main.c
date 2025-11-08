@@ -10,7 +10,8 @@
 
 void mouse_move(NativeWindow* window, uint16_t x, uint16_t y) {
         UNUSED(window);
-        LOG_INFO("%d %d", x, y);
+        UNUSED(x);
+        UNUSED(y);
 }
 
 void delete_window(NativeWindow* window) {
@@ -74,25 +75,7 @@ int main(void) {
 
     glm_perspective_default((float) window.width / (float) window.height, perspective);
 
-    // NOTE:
-    // camera
-    vec3 camera_pos; 
-
-    double i = 0;
     while (!window.should_close) {
-        const bool left_mouse_down = window_read_mouse_button(&window.mouse, MOUSE_BUTTON_LEFT);
-        const bool right_mouse_down = window_read_mouse_button(&window.mouse, MOUSE_BUTTON_RIGHT);
-        const uint16_t mouse_x = window.mouse.x;
-        const uint16_t mouse_y = window.mouse.y;
-
-        if (left_mouse_down || right_mouse_down) {
-            LOG_DEBUG("Mouse: (%d, %d) LMB: %d RMB: %d", mouse_x, mouse_y, left_mouse_down, right_mouse_down);
-        }
-
-        if (window_read_key(&window, KEY_CODE_ESCAPE, KEY_STATE_PRESSED)) {
-            window.should_close = true;
-        }
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0, 0.15, 0.4, 1);
 
