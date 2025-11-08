@@ -5,6 +5,7 @@ int main(void) {
 
         NativeWindow window = window_create("xlib_gl_example", 640, 480);
         GLctx        ctx    = gl_ctx_create(&window);
+        gl_ctx_make_current(&ctx);
 
         // NOTE(justin):
         // https://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
@@ -60,12 +61,12 @@ int main(void) {
 
                 glm_spin(model, 0.01f, (vec3){0,1,0});
 
+                glUseProgram(program);
+
                 glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, (float*)model);
                 glUniformMatrix4fv(glGetUniformLocation(program, "perspective"), 1, GL_FALSE, (float*)perspective);
                 glUniformMatrix4fv(glGetUniformLocation(program, "view"), 1, GL_FALSE, (float*)view);
 
-
-                glUseProgram(program);
                 glEnableVertexAttribArray(0);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo);
                 glDrawArrays(GL_TRIANGLES, 0, 3);

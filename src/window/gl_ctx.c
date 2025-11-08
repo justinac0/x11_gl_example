@@ -1,7 +1,6 @@
 // NOTE:
 // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDebugMessageCallback.xhtml
 // callback only supported on OpenGL version >= 4.3
-#include "glad/egl.h"
 INTERNAL void gl_debug_callback_(GLenum source, GLenum type, GLuint id,
                                  GLenum severity, GLsizei length,
                                  const GLchar* message, const void* userParam) {
@@ -45,7 +44,7 @@ GLOBAL GLctx gl_ctx_create(NativeWindow* window) {
                         LOG_FATAL("EGL version 1.5 required, got EGL v%d.%d",
                                   major, minor);
                 }
-                LOG_INFO("EGL v%d.%d", major, minor);
+                LOG_INFO("EGL Version: %d.%d", major, minor);
         }
 
         EGLBoolean ok = eglBindAPI(EGL_OPENGL_API);
@@ -105,8 +104,6 @@ GLOBAL GLctx gl_ctx_create(NativeWindow* window) {
                         ctx.surface = eglCreatePlatformWindowSurface(
                             ctx.display, configs[i], &window->handle, attr);
                         if (ctx.surface != EGL_NO_SURFACE) {
-                                LOG_INFO(
-                                    "found a platform specfic window surface");
                                 break;
                         }
                 }
@@ -138,31 +135,42 @@ GLOBAL GLctx gl_ctx_create(NativeWindow* window) {
                 }
         }
 
-        gl_ctx_make_current(&ctx);
-        int gl_version = gladLoaderLoadGL();
-        LOG_INFO("GL v%d.%d", GLAD_VERSION_MAJOR(gl_version),
-                 GLAD_VERSION_MINOR(gl_version));
-
-        glDebugMessageCallback(&gl_debug_callback_, NULL);
-        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-
-        glViewport(0, 0, window->width, window->height);
-
         return ctx;
 }
 
 GLOBAL void gl_ctx_destroy(GLctx* ctx) {
+        assert(ctx);
+
         gladLoaderUnloadGL();
         eglDestroyContext(ctx->display, ctx->context);
         eglDestroySurface(ctx->display, ctx->surface);
+}
+
+inline GLOBAL void gl_ctx_make_current(GLctx* ctx) {
+        assert(ctx);
+        EGLBoolean ok = eglMakeCurrent(ctx->display, ctx->surface, ctx->surface,
+                                       ctx->context);
+        if (ok != True) {
+                LOG_FATAL("failed to make egl context current");
+        }
+
+        int gl_version = gladLoaderLoadGL();
+        //LOG_INFO("Supported OpenGL v%d.%d", GLAD_VERSION_MAJOR(gl_version),
+        //         GLAD_VERSION_MINOR(gl_version));
+
+        // ref: https://stackoverflow.com/questions/68784829/how-print-out-the-opengl-version-of-a-gpu-and-put-it-in-a-string-in-opengl-and-c#68784846
+        LOG_INFO("OpenGL Vendor: %s", glGetString(GL_VENDOR));
+        LOG_INFO("OpenGL Renderer: %s", glGetString(GL_RENDERER));
+        LOG_INFO("OpenGL Version: %s", glGetString(GL_VERSION));
+        LOG_INFO("OpenGL Shading Language Version: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+        glDebugMessageCallback(&gl_debug_callback_, NULL);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+
+        assert(ok);
 }
 
 inline GLOBAL void gl_ctx_swapbuffers(GLctx* ctx) {
         eglSwapBuffers(ctx->display, ctx->surface);
 }
 
-inline GLOBAL void gl_ctx_make_current(GLctx* ctx) {
-        EGLBoolean ok = eglMakeCurrent(ctx->display, ctx->surface, ctx->surface,
-                                       ctx->context);
-        assert(ok);
-}

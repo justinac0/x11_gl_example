@@ -8,6 +8,7 @@ typedef struct {
 } GLctx;
 
 GLOBAL GLctx gl_ctx_create(NativeWindow* window);
+GLOBAL void  gl_ctx_make_current(GLctx* ctx);
 GLOBAL void  gl_ctx_destroy(GLctx* ctx);
 GLOBAL void  gl_ctx_swapbuffers(GLctx* ctx);
 GLOBAL void  gl_ctx_make_current(GLctx* ctx);

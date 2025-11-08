@@ -14,7 +14,8 @@ together in my free time.
 - cglm: https://cglm.readthedocs.io/en/latest/index.html
 
 ## todo
-- [ ] correctly set window properties WM_PROTO etc...
 - [ ] display GPU/GL info 
+- [ ] correctly set window properties WM_PROTO etc...
 - [ ] cleanup xcb and xlib code
 - [ ] fix memory leaks fomr 'libgallium'?
+

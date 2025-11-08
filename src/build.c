@@ -40,12 +40,15 @@
 #include "src/base.h"
 #include "src/log/log.h"
 #include "src/log/log.c"
+
 #include "src/window/window.h"
+
 #if defined(WINDOW_XLIB)
 #include "src/window/xlib_window.c"
 #elif defined(WINDOW_XCB)
 #include "src/window/xcb_window.c"
 #endif
+
 #include "src/window/gl_ctx.h"
 #include "src/window/gl_ctx.c"
 #include "src/render/gl/shader.h"
